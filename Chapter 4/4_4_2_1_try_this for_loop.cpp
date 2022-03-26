@@ -5,11 +5,12 @@
 int main()
 {
     char c = 'a';
+    cout<<"Char:"<<'\t'<<"int value:"<<'\n';
 
-    for (int i = 0; i<128; i++)
-    {
-        cout<<char(c+i)<<'\t'<<i<<'\n';
+    while (c <= 'z'){
+        cout<<c<<'\t'<<int(c)<<'\n';
+        ++c;
     }
-    
+       
     return 0;
 }
