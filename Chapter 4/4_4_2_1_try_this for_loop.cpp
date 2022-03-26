@@ -7,10 +7,10 @@ int main()
     char c = 'a';
     cout<<"Char:"<<'\t'<<"int value:"<<'\n';
 
-    while (c <= 'z'){
+    for (c = 'a'; c <= 'z'; c++)
+    {
         cout<<c<<'\t'<<int(c)<<'\n';
-        ++c;
     }
-       
+           
     return 0;
 }
