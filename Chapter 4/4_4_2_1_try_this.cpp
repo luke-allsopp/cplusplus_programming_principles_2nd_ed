@@ -4,14 +4,13 @@
 
 int main()
 {
-    int i = 0;
     char c = 'a';
+    cout<<"Char:"<<'\t'<<"int value:"<<'\n';
 
-    while (i<128)
-    {
-        cout<<char(c+i)<<'\t'<<i<<'\n';
-        ++i;
+    while (c <= 'z'){
+        cout<<c<<'\t'<<int(c)<<'\n';
+        ++c;
     }
-    
+       
     return 0;
 }
