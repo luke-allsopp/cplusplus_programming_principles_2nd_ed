@@ -22,5 +22,7 @@ int main()
         median = temps[mid];
     }
 
-    cout << "Median of temps entered: " << median << '\n\n';
+    cout << "Median of temps entered: " << median << '\n';
+
+    return 0;
 }
