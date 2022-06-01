@@ -12,25 +12,20 @@ calcluate how many squares needed to give:
 in prog - giving shit results
 */
 
-int square(double v)
-{
-    return v*v;
-}
 
 int main()
 {
-    double sum, x = 0;
-    int prize1 = 1000;
-    int prize2 = 1000000;
-    int prize3 = 1000000000;
-
-    cout << "square #:" << "  " << "rice for this square:" << "total rice:\n";
-
-    for (int i = 1; i < 65; i++)
-    {         
-        sum += x = square(i);
-        cout << i << "      " << x << "     " <<sum <<'\n';
-    }
-
-    return 0;    
+	int square = 1;
+	int rice = 1;
+	int target = 0;
+	   
+	cout << "How many grains do you want?\n";
+	cin >> target;
+	    
+	while (rice < target) {
+	  	rice *= 2;
+        	square += 1;
+	}
+	    
+        cout << "# of grains of rice: " << rice << " chess square #: " << square << '\n';
 }
