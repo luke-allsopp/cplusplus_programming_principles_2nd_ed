@@ -56,7 +56,11 @@ int main()
         if (input2 == names[j])
         {
             cout << names[j] << "'s score is " << scores[j] << '\n';
-        } 
+        } else
+        {
+            cout << "Name not Found";
+        }
+        
     }
 
     return 0;
