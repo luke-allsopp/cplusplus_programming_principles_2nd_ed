@@ -1,14 +1,13 @@
-/*
-ch 5 drill ex 
-original code snippet:
-
-*/
+/*ch 5 drill ex 1
+  original code snippet:
+  Cout << "Success!\n";  
+   */
 
 #include "../std_lib_facilities_orig.h"
 
 int main()
 try {
-    //insert code here
+    cout << "Success!\n"; //lower case c in cout
     keep_window_open();
     return 0;
 }
