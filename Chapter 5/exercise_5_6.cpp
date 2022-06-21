@@ -1,34 +1,34 @@
 /*
-ch5 ex 2 - 5 
+ch5 ex 6
 
-c <> k converter
+c <> F converter
 */
 
 #include "../std_lib_facilities_orig.h"
 
-double ctok (double c)
+double ctof (double c)
 {
-    int k = 0;
+    int f = 0;
     double cmin = -273.15;
     
-    k = c + 273.15;
+    f = 1.8*c + 32;
     
     if (c <= cmin )
     {
         cerr << "ERROR: attempting to convert temp lower than absolute zero" << '\n';
     }
     
-    return k;
+    return f;
 }
 
-double ktoc (double k)
+double ftoc (double f)
 {
-    int c = -273.15;
-    double kmin = 0;
+    int c = 0;
+    double fmin = -460.3;
+
+    c = (f -32) * (5/9);
     
-    c = k - 273.15;
-    
-    if (k <= kmin )
+    if (f <= fmin )
     {
         cerr << "ERROR: attempting to convert temp lower than absolute zero" << '\n';
     }
@@ -45,19 +45,19 @@ int main()
         char InUnit = ' ';
         char OutUnit = ' ';
         
-        cout << "input temp and unit to (C or K) to convert: \n";
+        cout << "input temp and unit to (C or F) to convert: \n";
         cin >> InTemp >> InUnit;
 
         if (InUnit=='c' || InUnit=='C') {
-        OutTemp = ctok(InTemp);
-        OutUnit = 'K';
+        OutTemp = ctof(InTemp);
+        OutUnit = 'F';
         }
-        else if (InUnit=='k' || InUnit=='K') {
-        OutTemp = ktoc(InTemp);
+        else if (InUnit=='f' || InUnit=='F') {
+        OutTemp = ftoc(InTemp);
         OutUnit = 'C';
         }
         else{
-            error("Illegal unit, must be C or K");
+            error("Illegal unit, must be C or F");
         } 
 
         cout << InTemp << ' ' << InUnit << " is " << OutTemp << " " << OutUnit << '\n';
