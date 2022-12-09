@@ -1,4 +1,4 @@
 # Ignore build dir
 build/
-
+.vscode/
 ### Above combination will ignore all files without extension ###
