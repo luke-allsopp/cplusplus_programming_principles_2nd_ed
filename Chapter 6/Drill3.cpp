@@ -1,4 +1,4 @@
-//Chapter 6 drill part 1
+//Chapter 6 drill part 3
 
 #include "../std_lib_facilities_orig.h"
 
@@ -58,8 +58,8 @@ Token Token_stream::get()
     cin >> ch;    // note that >> skips whitespace (space, newline, tab, etc.)
 
     switch (ch) {
-    case ';':    // for "print"
-    case 'q':    // for "quit"
+    case '=':    // for "print"
+    case 'x':    // for "quit"
     case '(': case ')': case '+': case '-': case '*': case '/':
         return Token(ch);        // let each character represent itself
     case '.':
@@ -73,7 +73,7 @@ Token Token_stream::get()
     }
     default:
         error("Bad token");
-        keep_window_open("~2");
+        keep_window_open("~");
         return 2;
     }
 }
@@ -104,7 +104,7 @@ double primary()
         return t.value;  // return the number's value
     default:
         error("primary expected");
-        keep_window_open("~2");
+        keep_window_open("~");
         return 2;
     }
 }
@@ -167,27 +167,28 @@ double expression()
 
 int main()
 try{
+    cout << "Welcome to our simple calculator, \nPlease enter expression using floating point literals: \nNB: supported operators include (+,-,/,*) ONLY. \n'x' to quit, '=' to evaluate the expression";
     double val = 0;
     while (cin) {
+        cout << "> ";                             //printing a prompt for clarity
         Token t = ts.get();
-
-        if (t.kind == 'q') break; // 'q' for quit
-        if (t.kind == ';')        // ';' for "print now"
-            cout << "=" << val << '\n';
-        else
-            ts.putback(t);
-        val = expression();
+        while (t.kind == '=') t = ts.get();       // just eat the ;      
+        if (t.kind == 'x'){
+            keep_window_open();
+            return 0;
+        }
+        ts.putback(t);
+        cout << expression() << '\n';
     }
-    keep_window_open("~0");
 }
 catch (exception& e) {
     cerr << "error: " << e.what() << '\n';
-    keep_window_open("~1");
+    keep_window_open("~");
     return 1;
 }
 catch (...) {
     cerr << "Oops: unknown exception!\n";
-    keep_window_open("~2");
+    keep_window_open("~");
     return 2;
 }
 

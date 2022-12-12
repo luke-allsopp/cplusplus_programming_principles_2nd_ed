@@ -1,21 +1,4 @@
-
-//
-// This is example code from Chapter 6.7 "Trying the second version" of
-// "Software - Principles and Practice using C++" by Bjarne Stroustrup
-//
-
-/*
-    This file is known as calculator02buggy.cpp
-
-    I have inserted 5 errors that should cause this not to compile
-    I have inserted 3 logic errors that should cause the program to give wrong results
-
-    First try to find an remove the bugs without looking in the book.
-    If that gets tedious, compare the code to that in the book (or posted source code)
-
-    Happy hunting!
-
-*/
+//Chapter 6 drill part 2
 
 #include "../std_lib_facilities_orig.h"
 
@@ -186,25 +169,25 @@ int main()
 try{
     double val = 0;
     while (cin) {
+        cout << "> "; //printing a prompt for clarity
         Token t = ts.get();
-
-        if (t.kind == 'x') break; // 'q' for quit
-        if (t.kind == ';')        // ';' for "print now"
-            cout << "=" << val << '\n';
-        else
-            ts.putback(t);
-        val = expression();
+        while (t.kind == ';') t = ts.get();       // just eat the ;      
+        if (t.kind == 'x'){
+            keep_window_open();
+            return 0;
+        }
+        ts.putback(t);
+        cout << "= " << expression() << '\n';
     }
-    keep_window_open("~0");
 }
 catch (exception& e) {
     cerr << "error: " << e.what() << '\n';
-    keep_window_open("~1");
+    keep_window_open("~");
     return 1;
 }
 catch (...) {
     cerr << "Oops: unknown exception!\n";
-    keep_window_open("~2");
+    keep_window_open("~");
     return 2;
 }
 
