@@ -1,0 +1,14 @@
+Expression:
+    Term
+    Expression "+" Term
+    Expression "-" Term
+Term:
+    Primary
+    Term "*" Primary
+    Term "/" Primary
+    Term "%" Primary        //modulo (remainder)
+Primary:
+    number
+    "("Expression")"
+Number:
+    Floating point literal
