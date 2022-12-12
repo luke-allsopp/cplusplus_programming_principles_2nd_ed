@@ -167,6 +167,7 @@ double expression()
 
 int main()
 try{
+    cout << "Welcome to our simple calculator, \nPlease enter expression using floating point literals: \nNB: supported operators include (+,-,/,*) ONLY. \n'x' to quit, '=' to evaluate the expression";
     double val = 0;
     while (cin) {
         cout << "> ";                             //printing a prompt for clarity
