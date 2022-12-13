@@ -11,6 +11,7 @@ int main() {
     cin >> numStr;
 
     // Check if input is a valid integer
+    //using isdigit - not in textbook so far but *shrug* 
     for (char c : numStr) {
         if (!isdigit(c)) {
             cout << "Invalid input: not a number";
