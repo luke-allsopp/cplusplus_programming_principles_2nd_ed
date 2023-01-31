@@ -16,6 +16,7 @@ struct Token {
 	double value;
 	string name;
 	Token(char ch) :kind(ch), value(0) { }
+	Token(char ch, string s): kind(ch), name(s){ }
 	Token(char ch, double val) :kind(ch), value(val) { }
 };
 
@@ -43,31 +44,16 @@ Token Token_stream::get()
 	char ch;
 	cin >> ch;
 	switch (ch) {
-	case '(':
-	case ')':
-	case '+':
-	case '-':
-	case '*':
-	case '/':
-	case '%':
-	case ';':
+	case '(':	case ')':	case '+':	case '-':	case '*':	case '/':	case '%':	case ';':
 	case '=':
 		return Token(ch);
-	case '.':
-	case '0':
-	case '1':
-	case '2':
-	case '3':
-	case '4':
-	case '5':
-	case '6':
-	case '7':
-	case '8':
+	case '.':	case '0':	case '1':	case '2':	case '3':	case '4':	case '5':	case '6':	case '7':	case '8':
 	case '9':
-	{	cin.unget();
-	double val;
-	cin >> val;
-	return Token(number, val);
+	{	
+		cin.unget();
+		double val;
+		cin >> val;
+		return Token(number, val);
 	}
 	default:
 		if (isalpha(ch)) {
@@ -137,9 +123,11 @@ double primary()
 	Token t = ts.get();
 	switch (t.kind) {
 	case '(':
-	{	double d = expression();
-	t = ts.get();
-	if (t.kind != ')') error("'(' expected");
+	{	
+		double d = expression();
+		t = ts.get();
+		if (t.kind != ')') error("'(' expected");
+		return d;
 	}
 	case '-':
 		return -primary();
