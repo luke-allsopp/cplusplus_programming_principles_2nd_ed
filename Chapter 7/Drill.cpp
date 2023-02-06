@@ -1,12 +1,9 @@
-//drill 1 - get calculator08buggy to compile
-
-
 /*
-	calculator08buggy.cpp
+Chapter 07 Drill 01 - Simple calculator:
 
-	Helpful comments removed.
+This program implements a basic expression calculator.
+Input from cin; output to cout.
 
-	We have inserted 3 bugs that the compiler will catch and 3 that it won't.
 */
 
 #include "../std_lib_facilities_orig.h"
@@ -16,7 +13,7 @@ struct Token {
 	double value;
 	string name;
 	Token(char ch) :kind(ch), value(0) { }
-	Token(char ch, string s): kind(ch), name(s){ }
+	Token(char ch, string s) :kind(ch), name(s) { }
 	Token(char ch, double val) :kind(ch), value(val) { }
 };
 
@@ -24,52 +21,69 @@ class Token_stream {
 	bool full;
 	Token buffer;
 public:
-	Token_stream() :full(0), buffer(0) { }
-
+	Token_stream() :full(0), buffer(0) { }	
 	Token get();
 	void unget(Token t) { buffer = t; full = true; }
-
 	void ignore(char);
 };
 
-const char let = 'L';
+const char let = '#';
 const char quit = 'Q';
 const char print = ';';
 const char number = '8';
+const char square_root = '?';
 const char name = 'a';
+const char power = '^';
 
 Token Token_stream::get()
+// read characters from cin and compose a Token
 {
-	if (full) { full = false; return buffer; }
+	if (full) { 			// check if we already have a Token ready
+		full = false; 
+		return buffer; 
+	}
 	char ch;
-	cin >> ch;
+	cin >> ch;				// >> ignores whitespace and newline
 	switch (ch) {
-	case '(':	case ')':	case '+':	case '-':	case '*':	case '/':	case '%':	case ';':
+	case quit:
+	case square_root:
+	case power:
+	case let:
+	case '(':	
+	case ')':	
+	case '+':	
+	case '-':	
+	case '*':	
+	case '/':	
+	case '%':	
+	case ';':
 	case '=':
-		return Token(ch);
-	case '.':	case '0':	case '1':	case '2':	case '3':	case '4':	case '5':	case '6':	case '7':	case '8':
-	case '9':
-	{	
-		cin.unget();
+		return Token(ch);	// let each character represent itself
+	case '.':				// floats can start with .
+	case '0':	case '1':	case '2':	case '3':	case '4':	
+	case '5':	case '6':	case '7':	case '8':	case '9':	//numeric literal
+	{					
+		cin.putback(ch);	//put digit into the input stream
 		double val;
-		cin >> val;
+		cin >> val;			//read a float
 		return Token(number, val);
 	}
 	default:
 		if (isalpha(ch)) {
 			string s;
 			s += ch;
-			while (cin.get(ch) && (isalpha(ch) || isdigit(ch))) s = ch;
-			cin.unget();
-			if (s == "let") return Token(let);
-			if (s == "quit") return Token(name);
+			while (cin.get(ch) && (isalpha(ch) || isdigit(ch))) s += ch;
+			cin.putback(ch);
+			//if (s == "let") return Token(let);  //removed to let == # instead
+			if (s == "exit") return Token(quit);
+			if (s == "sqrt") return Token(square_root);
 			return Token(name, s);
 		}
 		error("Bad token");
 	}
 }
 
-void Token_stream::ignore(char c)
+void Token_stream::ignore(char c)  //ignores all tokens up until the first instance of "c"
 {
 	if (full && c == buffer.kind) {
 		full = false;
@@ -90,14 +104,14 @@ struct Variable {
 
 vector<Variable> names;
 
-double get_value(string s)
+double get_value(string s)  //get a variable value from variable vector
 {
 	for (int i = 0; i < names.size(); ++i)
 		if (names[i].name == s) return names[i].value;
 	error("get: undefined name ", s);
 }
 
-void set_value(string s, double d)
+void set_value(string s, double d)  //changes the value of an existing variable
 {
 	for (int i = 0; i <= names.size(); ++i)
 		if (names[i].name == s) {
@@ -116,9 +130,9 @@ bool is_declared(string s)
 
 Token_stream ts;
 
-double expression();
+double expression();  //declaration so primary can use it
 
-double primary()
+double primary() // handles (), unary + / -, names, and assignments
 {
 	Token t = ts.get();
 	switch (t.kind) {
@@ -130,30 +144,71 @@ double primary()
 		return d;
 	}
 	case '-':
-		return -primary();
+		return - primary();
 	case number:
 		return t.value;
 	case name:
 		return get_value(t.name);
+	case square_root:
+	{
+		double d = primary();
+		if (d<0) error ("Blerg, cannot handle imaginary numbers (attempted to square root negative number)");
+		return sqrt(d);
+	}
 	default:
 		error("primary expected");
 	}
 }
 
-double term()
+double pow(double base, double exp)
 {
-	double left = primary();
+    int x = narrow_cast<int>(exp);
+
+    double n = 1;
+    double b;
+
+    if (exp < 0) {
+        b = 1 / base;
+        x *= -1;
+    } else
+        b = base;
+
+    for (int i = 0; i < x; ++i)
+        n *= b;
+
+    return n;
+}
+
+double secondary()
+{
+    double left = primary();
+    while(true) {
+        Token t = ts.get();
+        switch(t.kind) {
+            case '^':
+                return pow(left, primary());
+            default:
+                ts.unget(t);
+                return left;
+        }
+    }
+}
+
+double term() //handles *, / 
+{
+	double left = secondary();
 	while (true) {
 		Token t = ts.get();
 		switch (t.kind) {
 		case '*':
-			left *= primary();
+			left *= secondary();
 			break;
 		case '/':
-		{	double d = primary();
-		if (d == 0) error("divide by zero");
-		left /= d;
-		break;
+		{	
+			double d = secondary();
+			if (d == 0) error("divide by zero");
+			left /= d;
+			break;
 		}
 		default:
 			ts.unget(t);
@@ -162,7 +217,7 @@ double term()
 	}
 }
 
-double expression()
+double expression() //handles + / -, calls term()
 {
 	double left = term();
 	while (true) {
@@ -181,10 +236,10 @@ double expression()
 	}
 }
 
-double declaration()
+double declaration() //  declare a variable called "name" with the initial value "expression"
 {
 	Token t = ts.get();
-	if (t.kind != 'a') error("name expected in declaration");
+	if (t.kind != name) error("name expected in declaration");
 	string name = t.name;
 	if (is_declared(name)) error(name, " declared twice");
 	Token t2 = ts.get();
@@ -194,7 +249,7 @@ double declaration()
 	return d;
 }
 
-double statement()
+double statement() // handles declarations and expressions
 {
 	Token t = ts.get();
 	switch (t.kind) {
@@ -206,7 +261,7 @@ double statement()
 	}
 }
 
-void clean_up_mess()
+void clean_up_mess() //clean up intput after errors
 {
 	ts.ignore(print);
 }
@@ -215,7 +270,10 @@ const string prompt = "> ";
 const string result = "= ";
 
 void calculate()
-{
+{	
+	names.push_back(Variable("k", 1000));  //predefine k
+	names.push_back(Variable("pi", 3.14159)); // predefine pi
+	
 	while (true) try {
 		cout << prompt;
 		Token t = ts.get();
@@ -231,8 +289,8 @@ void calculate()
 }
 
 int main()
-
-try {
+try 
+{
 	calculate();
 	return 0;
 }
